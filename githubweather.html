@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Parcel Sandbox</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://kit.fontawesome.com/697c3ac5c9.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="src/styles.css" />
+    <title>WeatherPage</title>
+</head>
+<style>
+    .card {
+        border-radius: 4px;
+        border-width: 1px;
+        border-color: black;
+    }
+
+    h1 {
+        text-align: center;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+        padding-top: 17px;
+        padding-bottom: 8px;
+    }
+
+    h2,
+    h3 {
+        color: #57565c;
+    }
+
+    body {
+        background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+    }
+
+    button {
+        background: darkgrey;
+        position: relative;
+        margin: 0 auto;
+        border: 10px;
+        border-color: black;
+        border-radius: 10px;
+        max-width: 600px;
+        color: white;
+        transition: all 200ms ease-in-out;
+    }
+
+    #city {
+        text-align: left;
+        margin-top: 0;
+        padding-top: 30px;
+        display: block;
+        font-size: 25px;
+        font-weight: bold;
+        line-height: 1;
+    }
+
+    #date {
+        text-align: left;
+        margin: 0;
+        display: block;
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 1;
+        padding-bottom: 70px;
+    }
+
+    #current-temperature {
+        font-size: 45px;
+        color: #57565c;
+        font-weight: 400;
+        line-height: 1;
+        margin-left: 12px;
+    }
+
+    ul {
+        color: #57565c;
+        float: right;
+    }
+
+    li {
+        list-style: none;
+        color: #57565c;
+    }
+
+    .current-location-button {
+        position: relative;
+        padding-top: 3px;
+    }
+
+    .forecast-day {
+        color: black;
+    }
+
+    .five-day-forecast {
+        text-align: center;
+        margin: 20px 0px 30px 100px;
+    }
+
+    .forecast-icons {
+        font-size: 35px;
+    }
+
+    .current-weather-icon {
+        font-size: 20px;
+    }
+
+    .temperature {
+        font-size: 65px;
+    }
+
+    .current-weather-icon {
+        color: grey;
+        font-size: 30px;
+        position: relative;
+    }
+
+    .city {
+        font-size: 50px;
+    }
+
+    footer {
+        font-size: 12px;
+        text-align: center;
+        line-height: 20px;
+        color: #57565c;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <h1>
+            WeatherEngine
+        </h1>
+        <div class="card">
+            <div class="container">
+                <div class="weather-app">
+                    <div class="row date">
+                        <div class="col-12">
+                            <div class="classfix">
+                                <div style="float: right;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row city-search">
+                        <div class="col-8">
+                            <div class="mb-3">
+                                <form class="searchEngine" id="search-engine">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <input type="search" id="city-input" placeholder="Enter City..."
+                                                autofocus="on" />
+                                            <button class="searchButton" type="button">Search</button>
+                                            <button class="currentLocationButton" type="button"
+                                                id="current-location-button"> Current Location</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-4">
+                        <div class="currentWeather">
+                            <h1>
+                                <span class="currentTemperature" id="current-temperature">
+                                    32
+                                </span>
+                                <span class="unit">
+                                    <a href="#" id="fahrenheit-link">°F</a>
+                                    |
+                                    <a href="#" id="celsius-link">°C</a>
+                                </span>
+                            </h1>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="row current-location-information align-items-end">
+                        <div class="col-4 city"></div>
+
+                        <div class="currentForecast">
+                            <div class="col-4">
+                                <h2 id="current-city">
+                                    Seattle
+                                </h2>
+                                <h3 id="current-date">
+                                    Saturday 12:00
+                                </h3>
+                                <span id="description">
+                                </span>
+                            </div>
+                            <div style="float: right;">
+                                <ul class="weather-details">
+                                    <li>Humidity: <span id="humidity">0%</span></li>
+                                    <li>Wind speed: <span id="wind-speed">0 mph</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr />
+
+                <h6>
+                    Weekly Forecast
+                </h6>
+
+                <div class="col-10">
+                    <div class="five-day-forecast">
+                        <div class="row forecast-day">
+                            <div class="col">Sun</div>
+                            <div class="col">Mon</div>
+                            <div class="col">Tues</div>
+                            <div class="col">Wed</div>
+                            <div class="col">Thurs</div>
+                        </div>
+                        <div class="row forecast-icons">
+                            <div class="col">
+                                <i class="far fa-snowflake forecast-icon"></i>
+                            </div>
+                            <div class="col">
+                                <i class="fas fa-cloud-sun-rain forecast-icon"></i>
+                            </div>
+                            <div class="col">
+                                <i class="fas fa-cloud-sun forecast-icon"></i>
+                            </div>
+                            <div class="col">
+                                <i class="fas fa-cloud-showers-heavy forecast-icon"></i>
+                            </div>
+                            <div class="col">
+                                <i class="fas fa-cloud-showers-heavy forecast-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="row forecast-temp">
+                            <div class="col">4° / 0°</div>
+                            <div class="col">12° / 4°</div>
+                            <div class="col">11° / 3°</div>
+                            <div class="col">13° / 5°</div>
+                            <div class="col">7° / 4°</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Sponsor: Kai Engel
+            <br />
+
+            Made by: Alina Engel
+        </footer>
+
+</body>
+<script>
+    // Date & Time
+
+    function formatDate(date) {
+        let hour = date.getHours();
+        if (hour < 10) {
+            hour = `0${hour}`;
+        }
+        let minutes = date.getMinutes();
+        if (minutes < 10) {
+            minutes = `0${minutes}`;
+        }
+        let dayIndex = date.getDay();
+        let days = [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+        ];
+        let day = days[dayIndex];
+
+        return `${day} ${hour}:${minutes}`;
+    }
+
+    //Week 5
+
+    function showWeatherConditions(response) {
+        console.log(response.data);
+        let temperature = Math.round(response.data.main.temp);
+        let currentTemp = document.querySelector("#current-temperature");
+        currentTemp.innerHTML = `${temperature}`;
+
+        //Humidity
+        document.querySelector("#humidity").innerHTML = response.data.main.humidity;
+
+        //Wind
+        document.querySelector("#wind-speed").innerHTML = Math.round(
+            response.data.main.wind
+        );
+
+        //Description
+        document.querySelector("#description").innerHTML =
+            response.data.weather[0].main;
+    }
+
+    //Search City
+    function searchCity(city) {
+        let apiKey = "70de72ce25d0801c193edd1d17ced422";
+        let apiEndPoint = `https://api.openweathermap.org/data/2.5/weather?q=`;
+        let apiUrl = `${apiEndPoint}${city}&appid=${apiKey}&units=metric`;
+        axios.get(apiUrl).then(showWeatherConditions);
+    }
+
+    //Dispaly City
+    function handleSubmit(event) {
+        event.preventDefault();
+        let cityInput = document.querySelector("#city-input");
+        let city = document.querySelector("#current-city");
+        city.innerHTML = cityInput.value;
+        searchCity(cityInput.value);
+    }
+
+    //Search Location
+    function searchLocation(position) {
+        let apiKey = "70de72ce25d0801c193edd1d17ced422";
+        let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}&units=metric`;
+        axios.get(apiUrl).then(showWeatherConditions);
+    }
+
+    //Current Location
+    function getCurrentLocation(event) {
+        event.preventDefault();
+        navigator.geolocation.getCurrentPosition(searchLocation);
+    }
+
+    //Farhenheit and Celcius
+    function convertFahrenheit(event) {
+        event.preventDefault();
+        let tempElement = document.querySelector("#temperature");
+        tempElement.innerHTML = `32`;
+    }
+
+    function convertCelsius(event) {
+        event.preventDefault();
+        let tempElement = document.querySelector("#temperature");
+        tempElement.innerHTML = `19`;
+    }
+
+    //Current Time
+    let date = document.querySelector("#current-date");
+    let localDate = new Date();
+    date.innerHTML = formatDate(localDate);
+
+    //Search Engine Button
+    let searchForm = document.querySelector("#search-engine");
+    searchForm.addEventListener("submit", handleSubmit);
+
+    //Current Location Button
+    let currentLocationButton = document.querySelector("#current-location-button");
+    currentLocationButton.addEventListener("click", getCurrentLocation);
+
+    searchCity("Seattle");
+
+</script>
+</body>
+
+</html>
